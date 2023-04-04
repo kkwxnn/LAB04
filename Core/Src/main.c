@@ -50,7 +50,7 @@ float duty = 0;
 arm_pid_instance_f32 PID = {0};
 float position = 0;
 float setposition = 0;
-float setdegree = 30000;
+float setdegree = 360;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,7 +106,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
 
-  PID.Kp = 1;
+  PID.Kp = 20;
   PID.Ki = 0;
   PID.Kd = 0;
   arm_pid_init_f32(&PID, 0);
