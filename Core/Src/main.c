@@ -50,7 +50,9 @@ float duty = 0;
 arm_pid_instance_f32 PID = {0};
 float position = 0;
 float setposition = 0;
-float setdegree = 360;
+float setdegree = 360.5;
+float maxposition = 0;
+float overshoot = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,9 +108,9 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
 
-  PID.Kp = 20;
+  PID.Kp = 30;
   PID.Ki = 0;
-  PID.Kd = 0;
+  PID.Kd = 60;
   arm_pid_init_f32(&PID, 0);
 
   /* USER CODE END 2 */
@@ -140,6 +142,11 @@ int main(void)
 			  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1,0);
 			  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,-1*duty);
 		  }
+		  if (position > maxposition)
+		  {
+			  maxposition = position;
+		  }
+		  overshoot = maxposition - position;
 	  }
   }
   /* USER CODE END 3 */
@@ -291,7 +298,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 307199;
+  htim2.Init.Period = 307299;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
